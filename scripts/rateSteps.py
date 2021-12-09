@@ -9,6 +9,15 @@ rateStep = {
 			'avg' : 30,
 			'freq' : 1
 		},
+		'tunnel': {
+			'sum' : 500,
+			'N' : 5,
+			'med' : 30,
+			'thirdQ' : 75,
+			'max' : 100,
+			'avg' : 30,
+			'freq' : 1
+		},
 		'grade': {
 			'sum' : 0,
 			'N' : 0,

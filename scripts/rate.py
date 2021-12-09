@@ -3,6 +3,28 @@ from math import sqrt
 from rateSteps import rateStep
 
 def statAnal(data, cutHigh = False):
+	if len(data)==0:
+		return {
+			'N': 0,
+			'sum': 0,
+			'avg': 0,
+			'sum2': 0,
+			'sigma2': 0,
+			'sigma': 0,
+			'sd2': 0,
+			'sd': 0,
+			'min': 0,
+			'firstQ': 0,
+			'med': 0,
+			'thirdQ': 0,
+			'max': 0,
+			'freq': {
+				'0-100': 100,
+				'100-200' : 0,
+				'200-300' : 0,
+				'300-400' : 0
+			}
+	}
 	data.sort()
 	dataLen = len(data)
 	
@@ -66,33 +88,46 @@ def statAnal(data, cutHigh = False):
 		'freq': frequency
 	}
 
-lines, points, output = sys.argv[1:]
+analysed, output = sys.argv[1:]
 
 totalLength = 0;
 bridges = [];
-
-with open(lines) as lineFile:
-	cr = csv.DictReader(lineFile)
-	for row in cr:
-		totalLength += float(row['len'])
-		if float(row['bridgeLen']) > 0:
-			bridges.append(round(float(row['bridgeLen']),3))
-
+tunnels = [];
 grades = [];
 hzAngles = [];
-with open(points) as pointFile:
+
+with open(analysed) as pointFile:
 	cr = csv.DictReader(pointFile)
+	isBridge = 0;
+	isTunnel = 0;
 	for row in cr:
 		grades.append(round(abs(float(row['grade'])),3))
 		hzAngles.append(round(float(row['hz. angle']),3))
+		isBridgeTemp = int(row['bridge'])
+		if isBridgeTemp == 1:
+			if isBridge == 0:
+				bridges.append(float(row['length']))
+			else:
+				bridges[-1] += float(row['length'])
+		isBridge = isBridgeTemp
+		isTunnelTemp = int(row['tunnel'])
+		if isTunnelTemp == 1:
+			if isTunnel == 0:
+				tunnels.append(float(row['length']))
+			else:
+				tunnels[-1] += float(row['length'])
+		isTunnel = isTunnelTemp
+		totalLength += float(row['length'])
 
 bridgeAnal = statAnal(bridges)
+tunnelAnal = statAnal(tunnels)
 gradeAnal = statAnal(grades, True)
 hzAnglesAnal = statAnal(hzAngles)
 
 outputJSON = {
 	'Length': round(totalLength,3),
 	'Bridges': bridgeAnal,
+	'Tunnels': tunnelAnal,
 	'Grades': gradeAnal,
 	'Hz Angles': hzAnglesAnal
 }
@@ -106,12 +141,13 @@ def rateAnal(stats, sum = 0, N = 0, med = 0, thirdQ = 0, max = 0, avg = 0, freq 
 		rateDict['freq'] = 0
 		statsFreq = list(stats['freq'].values())
 		for x in range(0,4):
-			rateDict['freq'] += round((x+1)*statsFreq[x]/250,1)*5
+			rateDict['freq'] += round((x+1)*statsFreq[x]/400,1)*5
 	return rateDict
 	
 ratingJSON = {
 	'Length': f"{round((totalLength - 140000)/rateStep['length'], 1)}",
 	'Bridges': rateAnal(bridgeAnal, **rateStep['bridge']),
+	'Tunnels': rateAnal(tunnelAnal, **rateStep['tunnel']),
 	'Grades': rateAnal(gradeAnal, **rateStep['grade']),
 	'Hz Angles': rateAnal(hzAnglesAnal, **rateStep['hzAngle'])
 }
