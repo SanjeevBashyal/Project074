@@ -1,4 +1,4 @@
-#import pickle
+import pickle
 ele=QgsProject.instance().mapLayersByName('Elevation_TM_1000')[0]
 stp=QgsProject.instance().mapLayersByName('stp_tm')[0]
 etp=QgsProject.instance().mapLayersByName('etp_tm')[0]
@@ -10,7 +10,7 @@ es=rfe.features_to_tuples(list(etp.getFeatures()),blocke)
 #pickle.dump([mat, ss[0][0],es[0][0]], open("C:\\Users\\SANJEEV BASHYAL\\Documents\\QGIS\\Grade Path\\mat.dat", "wb"))
 
 gd=20 #design grade
-ad=10 #slope scaling in weightage
+ad=7 #slope scaling in weightage
 
 gr=Grid(mate);del(mate)
 srd=Grid(np.full([gr.h,gr.w],None)) #stores least distances
@@ -45,7 +45,7 @@ for i in range(gr.h):
         srn.insert(nei[xsl][oxsl],point)
         sru.insert(True,point)
 
-pickle.dump([srd.map, srn.map, sru.map], open("C:\\Users\\SANJEEV BASHYAL\\Documents\\QGIS\\Grade Path\\o_srd_srn_sru_20.dat", "wb"))
+pickle.dump([gr.map, ss[0][0], es[0][0], srd.map, srn.map, sru.map], open("C:\\Users\\SANJEEV BASHYAL\\Documents\\QGIS\\Grade Path\\o_gr_sp_ep_srd_srn_sru_20.dat", "wb"))
 
 #
 #mgr=gr.map

@@ -1,4 +1,5 @@
 import numpy as np
+import math as m
 
 class Grid:
         def __init__(self, matrix):
@@ -45,9 +46,9 @@ class Grid:
             self.map[id[0],id[1]]=value
             
         def update_less_than(self,values,ids):
-            vals=grd.values(ids)
+            vals=self.values(ids)
             ids=ids[np.where(values<vals)]
-            list(map(lambda n,m:grd.insert(m,n),nei,mag))
+            list(map(lambda n,m:self.insert(m,n),values[ids],ids))
 
         @staticmethod
         def manhattan_distance(id1, id2):
@@ -75,4 +76,4 @@ class Grid:
             if cx == nx or cy == ny:
                 return (currV + offsetV) / 2
             else:
-                return sqrt2 * (currV + offsetV) / 2
+                return m.sqrt(2) * (currV + offsetV) / 2
