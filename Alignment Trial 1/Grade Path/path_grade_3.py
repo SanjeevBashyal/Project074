@@ -11,7 +11,7 @@ def setdiff2d(A,B):
     C = C.view(A.dtype).reshape(-1, ncols)
     return C
 
-gd=-5
+gd=5
 
 gr=Grid(mat)
 slp=Grid(mats)
@@ -25,7 +25,7 @@ psp=sp
 
 flag=0
 
-while i<8000:
+while i<4000:
     spv=gr.value(sp)
     slpv=slp.value(sp)
     delta=np.arcsin(gd/slpv)*180/np.pi
@@ -108,7 +108,7 @@ while i<8000:
 points=rf.create_points_from_path(collect)
 geo=RasterF.create_path_feature_from_points(points,0)
 geo.setAttributes([1])
-loc=r'C:\Users\SANJEEV BASHYAL\Documents\QGIS\Test\aspect_path24.shp'
+loc=r'C:\Users\SANJEEV BASHYAL\Documents\QGIS\Test\aspect_path25.shp'
 fields=QgsFields()
 fields.append(QgsField('id',QVariant.Int))
 writer=QgsVectorFileWriter(loc,'UTF-8',fields,QgsWkbTypes.LineString,QgsCoordinateReferenceSystem('ESRI:102306'),'ESRI Shapefile')

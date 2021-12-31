@@ -96,18 +96,19 @@ class RasterF:
 
 
 #get data
-aspect = QgsProject.instance().mapLayersByName('hshade_nagarkot')[0]
-slope=QgsProject.instance().mapLayersByName('slope')[0]
-stp=QgsProject.instance().mapLayersByName('stp_tm')[0]
-etp=QgsProject.instance().mapLayersByName('etp_tm')[0]
-rf=RasterF(aspect)
-rfs=RasterF(slope)
-block=rf.get_block(1)
-blocks=rfs.get_block(1)
-mat,out=rf.block2matrix(block)
-mats,outs=rfs.block2matrix(blocks)
-#pickle.dump(mat, open("C:\\Users\\SANJEEV BASHYAL\\Documents\\QGIS\\Grade Path\\mat.dat", "wb"))
-ss=rf.features_to_tuples(list(stp.getFeatures()),block)
-es=rf.features_to_tuples(list(etp.getFeatures()),block)
-del(block,blocks)
+#aspect = QgsProject.instance().mapLayersByName('hshade_nagarkot')[0]
+#slope=QgsProject.instance().mapLayersByName('slope')[0]
+#ele=QgsProject.instance().mapLayersByName('Elevation_TM')[0]
+#stp=QgsProject.instance().mapLayersByName('stp_tm')[0]
+#etp=QgsProject.instance().mapLayersByName('etp_tm')[0]
+#rf=RasterF(aspect)
+#rfs=RasterF(slope)
+#block=rf.get_block(1)
+#blocks=rfs.get_block(1)
+##mat,out=rf.block2matrix(block)
+##mats,outs=rfs.block2matrix(blocks)
+##pickle.dump(mat, open("C:\\Users\\SANJEEV BASHYAL\\Documents\\QGIS\\Grade Path\\mat.dat", "wb"))
+#ss=rf.features_to_tuples(list(stp.getFeatures()),block)
+#es=rf.features_to_tuples(list(etp.getFeatures()),block)
+##del(block,blocks)
 

@@ -40,6 +40,14 @@ class Grid:
             
         def value(self, id):
             return self.map[id[0],id[1]]
+            
+        def insert(self,value,id):
+            self.map[id[0],id[1]]=value
+            
+        def update_less_than(self,values,ids):
+            vals=grd.values(ids)
+            ids=ids[np.where(values<vals)]
+            list(map(lambda n,m:grd.insert(m,n),nei,mag))
 
         @staticmethod
         def manhattan_distance(id1, id2):
