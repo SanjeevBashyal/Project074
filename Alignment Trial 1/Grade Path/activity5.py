@@ -96,15 +96,15 @@ csru=copy.deepcopy(sru)
 grd=Grid(np.full([gr.h,gr.w],np.inf)) #stores least distances
 gru=Grid(csru.map) #unvisited nodes as True
 grp=Grid(np.full([gr.h,gr.w],None)) #save path in form of points list
-# grn=Grid(np.full([gr.h,gr.w],False)) #nodes to get neighbours from
+grn=Grid(np.full([gr.h,gr.w],False)) #nodes to get neighbours from
 
 # sp=np.array(ss[0][0]);tsp=np.array(rfe._row_col_to_point_list(sp)) 
 # ep=np.array(es[0][0]);tep=np.array(rfe._row_col_to_point_list(ep)) 
 
 grd.insert(0,sp)
 gru.insert(None,sp)
-grp.insert(sp,sp)
-# grn.insert(True,sp)
+grp.insert(np.array([sp]),sp)
+grn.insert(True,sp)
 
 snei=gru.neighbors_ext(sp)
 for point in snei:
@@ -115,35 +115,43 @@ for point in snei:
         continue
     ppd2=np.delete(ppd,pindex)
     nein2=np.delete(nein,pindex,axis=0)
-    if nein2.size==0:
-        # grn.insert(False,point)
-        csru.insert(None,point)
     csrd.insert(ppd2,point)
     csrn.insert(nein2,point)
 
 collect=np.array([sp])
-get_nei=np.array([sp])
 i=1
 psp=sp
 while (sp!=ep).any():
-    print(i)
+    # if i==9999:
+    #     print("Here")
     c_length=[]
     c_pp=[]
-    c_pp_array=csrn.values(get_nei)
-    c_pp=np.array([z[0] for z in c_pp_array])
-    c_length_array=csrd.values(get_nei)
-    c_length=np.array([z[0] for z in c_length_array])
-    lpd=grd.values(get_nei)
-    total_ppd=lpd+c_length
-        
-    index=np.argmin(total_ppd)
+    c_sp=[]
+    get_nei=np.transpose((grn.map==True).nonzero())
+    for point in get_nei:
+        nei=csrn.value(point)
+        if nei.size==0:
+            grn.insert(False,point)
+            csru.insert(None,point)
+            continue
+
+        ppd=csrd.value(point)
+        lpd=grd.value(point)
+        total_ppd=lpd+ppd
+        index=np.argmin(total_ppd)
+        c_length.append(total_ppd[index])
+        c_pp.append(nei[index])
+        c_sp.append(point)
+
+    index=np.argmin(c_length)
     pp=c_pp[index]
+    prev_path=grp.value(c_sp[index])
+    new_path=np.insert(prev_path,len(prev_path),pp,axis=0)
     grd.insert(c_length[index],pp)
     gru.insert(None,pp)
-    grp.insert(get_nei[index],pp)
-    if csrn.value(pp).size!=0:
-        get_nei=np.insert(get_nei,len(get_nei),pp,axis=0)
-    
+    grp.insert(new_path,pp)
+    grn.insert(True,pp)
+
     snei=csru.neighbors_ext(pp)
     for point in snei:
         ppd=csrd.value(point)
@@ -153,16 +161,14 @@ while (sp!=ep).any():
             continue
         ppd=np.delete(ppd,pindex)
         nein=np.delete(nein,pindex,axis=0)
-        if nein.size==0:
-            get_nei=np.delete(get_nei,np.where((get_nei==point).all(1)),axis=0)
-            csru.insert(None,point)
         csrd.insert(ppd,point)
         csrn.insert(nein,point)
-    
+
+
     psp=sp
     sp=pp
     collect=np.insert(collect,len(collect),pp,axis=0)
-    
+
     i=i+1
     if i>10000:
         break;
