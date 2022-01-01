@@ -124,7 +124,7 @@ for point in snei:
     ppd=np.delete(ppd,pindex)
     nein=np.delete(nein,pindex,axis=0)
     if nein.size==0:
-        index0=np.where((get_nei==point).all(1))
+        index0=np.where((get_nei==point).all(1))[0]
         get_nei=np.delete(get_nei,index0,axis=0)
         c_pp=np.delete(c_pp,index0,axis=0)
         c_length=np.delete(c_length,index0,axis=0)
@@ -137,8 +137,10 @@ i=1
 psp=sp
 while (sp!=ep).any():
     print(i)    
+    # if i==9999:
+    #     print("Here")
     index=np.argmin(c_length)
-    pp=c_pp[index]
+    pp=c_pp[index].copy()
     grd.insert(c_length[index],pp)
     gru.insert(None,pp)
     grp.insert(get_nei[index],pp)
@@ -147,16 +149,28 @@ while (sp!=ep).any():
         c_pp=np.insert(c_pp,len(c_pp),csrn.value(pp)[0],axis=0)
         c_length=np.insert(c_length,len(c_length),csrd.value(pp)[0]+grd.value(pp),axis=0)
 
-    c_pp_array=csrn.value(get_nei[index])
-    c_length_array=csrd.value(get_nei[index])
-    if len(c_pp_array)>1:
-        c_pp[index]=c_pp_array[1]
-        c_length[index]=c_length_array[1]+grd.value(get_nei[index])
-    else:
-        csru.insert(None,get_nei[index])
-        get_nei=np.delete(get_nei,index,axis=0)
-        c_pp=np.delete(c_pp,index,axis=0)
-        c_length=np.delete(c_length,index,axis=0)
+
+    while True:
+        c_pp_array=csrn.value(get_nei[index])
+        c_length_array=csrd.value(get_nei[index])
+        if len(c_pp_array)>1:
+            c_pp[index]=c_pp_array[1]
+            c_length[index]=c_length_array[1]+grd.value(get_nei[index])
+        else:
+            csru.insert(None,get_nei[index])
+            get_nei=np.delete(get_nei,index,axis=0)
+            c_pp=np.delete(c_pp,index,axis=0)
+            c_length=np.delete(c_length,index,axis=0)
+        indexes=np.where((c_pp== pp).all(1))[0]
+        if indexes.size==0:
+            break
+        else:
+            index=indexes[0]
+
+
+
+
+    
 
     
     snei=csru.neighbors_ext(pp)
@@ -169,7 +183,7 @@ while (sp!=ep).any():
         ppd=np.delete(ppd,pindex)
         nein=np.delete(nein,pindex,axis=0)
         if nein.size==0:
-            index0=np.where((get_nei==point).all(1))
+            index0=np.where((get_nei==point).all(1))[0]
             get_nei=np.delete(get_nei,index0,axis=0)
             c_pp=np.delete(c_pp,index0,axis=0)
             c_length=np.delete(c_length,index0,axis=0)
