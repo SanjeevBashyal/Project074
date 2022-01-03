@@ -79,7 +79,7 @@ class Grid:
                 return m.sqrt(2) * (currV + offsetV) / 2
 
 import pickle
-# import copy
+
 gr_map,sp,ep,srd_map,srn_map,sru_map=pickle.load(open(r'C:/Users/SANJEEV BASHYAL/Documents/QGIS/Grade Path/o_gr_sp_ep_srd_srn_sru_20.dat','rb'))
 sp=np.array(sp)
 osp=sp.copy()
@@ -90,28 +90,24 @@ csrn=Grid(srn_map)
 csru=Grid(sru_map)
 
 del(srd_map,srn_map,sru_map,gr_map)
-
-# csrd=copy.deepcopy(srd)
-# csrn=copy.deepcopy(srn)
-# csru=copy.deepcopy(sru)
-
-
 grd=Grid(np.full([gr.h,gr.w],np.inf)) #stores least distances
-# gru=Grid(csru.map) #unvisited nodes as True
 grp=Grid(np.full([gr.h,gr.w],None)) #save path in form of points list
-# grn=Grid(np.full([gr.h,gr.w],False)) #nodes to get neighbours from
 
 # sp=np.array(ss[0][0]);tsp=np.array(rfe._row_col_to_point_list(sp)) 
 # ep=np.array(es[0][0]);tep=np.array(rfe._row_col_to_point_list(ep)) 
 
 grd.insert(0,sp)
-# gru.insert(None,sp)
 grp.insert(sp,sp)
-# grn.insert(True,sp)
-get_nei=np.array([sp])
+get_nei=np.full([2000,2],-1)
+get_nei[0]=sp
+c_pp=np.full([2000,2],-1)
+c_length=np.full([2000],np.inf)
+locate=0
+locatelist=[]
 if csrn.value(sp).size!=0:
-    c_pp=np.array([csrn.value(sp)[0]])
-    c_length=np.array([csrd.value(sp)[0]+grd.value(sp)])
+    c_pp[locate]=csrn.value(sp)[0]
+    c_length[locate]=csrd.value(sp)[0]+grd.value(sp)
+    locate=locate+1
 else:
     print("Starting point has no neighbors")
     exit(0)
@@ -128,30 +124,39 @@ for point in snei:
     nein=np.delete(nein,pindex,axis=0)
     if nein.size==0:
         index0=np.where((get_nei==point).all(1))[0]
-        get_nei=np.delete(get_nei,index0,axis=0)
-        c_pp=np.delete(c_pp,index0,axis=0)
-        c_length=np.delete(c_length,index0,axis=0)
+        if index0.size>0:
+            get_nei[index0]=[-1,-1]
+            c_pp[index0]=[-1,-1]
+            c_length[index0]=np.inf
+            locatelist.append(index0[0])
         csru.insert(None,point)
     csrd.insert(ppd,point)
     csrn.insert(nein,point)
+
 
 # collect=np.array([sp])
 i=1
 psp=sp
 while (sp!=ep).any():
-    print(i)
-    # if i==9999:
-    #     print("Here")
-    index=np.argmin(c_length)
+    index=np.argmin(c_length[0:locate])
     pp=c_pp[index].copy()
     grd.insert(c_length[index],pp)
-    # gru.insert(None,pp)
-    grp.insert(get_nei[index],pp)
+    grp.insert(get_nei[index].copy(),pp)
+        
     if csrn.value(pp).size!=0:
-        get_nei=np.insert(get_nei,len(get_nei),pp,axis=0)
-        c_pp=np.insert(c_pp,len(c_pp),csrn.value(pp)[0],axis=0)
-        c_length=np.insert(c_length,len(c_length),csrd.value(pp)[0]+grd.value(pp),axis=0)
+        if locatelist:
+            location=locatelist[0]
+            locatelist.pop(0)
+        else:
+            location=locate
+            locate=locate+1
+        get_nei[location]=pp
+        c_pp[location]=csrn.value(pp)[0]
+        c_length[location]=csrd.value(pp)[0]+grd.value(pp)
 
+
+    if (i % 1000)==0:
+        k=1
 
     while True:
         c_pp_array=csrn.value(get_nei[index])
@@ -161,20 +166,16 @@ while (sp!=ep).any():
             c_length[index]=c_length_array[1]+grd.value(get_nei[index])
         else:
             csru.insert(None,get_nei[index])
-            get_nei=np.delete(get_nei,index,axis=0)
-            c_pp=np.delete(c_pp,index,axis=0)
-            c_length=np.delete(c_length,index,axis=0)
+            get_nei[index]=[-1,-1]
+            c_pp[index]=[-1,-1]
+            c_length[index]=np.inf
+            locatelist.append(index)
+
         indexes=np.where((c_pp== pp).all(1))[0]
         if indexes.size==0:
             break
         else:
             index=indexes[0]
-
-
-
-
-    
-
     
     snei=csru.neighbors_ext(pp)
     for point in snei:
@@ -186,25 +187,30 @@ while (sp!=ep).any():
         ppd=np.delete(ppd,pindex)
         nein=np.delete(nein,pindex,axis=0)
         if nein.size==0:
-            index0=np.where((get_nei==point).all(1))[0]
-            get_nei=np.delete(get_nei,index0,axis=0)
-            c_pp=np.delete(c_pp,index0,axis=0)
-            c_length=np.delete(c_length,index0,axis=0)
+            index1=np.where((get_nei==point).all(1))[0]
+            if index1.size>0:
+                get_nei[index]=[-1,-1]
+                c_pp[index]=[-1,-1]
+                c_length[index]=np.inf
+                locatelist.append(index1[0])
             csru.insert(None,point)
+
         csrd.insert(ppd,point)
         csrn.insert(nein,point)
-    
+
+
+    print(i,pp)
     psp=sp
     sp=pp
     # collect=np.insert(collect,len(collect),pp,axis=0)
     
     i=i+1
-    if i>100000:
-        break;
-        
-# np.savez('mat.npz', sp=osp, ep=ep, grp=grp.map, grd=grd.map )
-# pickle.dump([sp,ep,grp.map,grd.map],open(r'C:/Users/SANJEEV BASHYAL/Documents/QGIS/Grade Path/o_sp_ep_grp_grd_20_1000000.dat','wb'))
-        
+    if i>1000:
+        break
+
+pickle.dump([osp,ep,grp.map,grd.map],open(r'C:/Users/SANJEEV BASHYAL/Documents/QGIS/Grade Path/o_sp_ep_grp_grd_20_1000000.dat','wb'))
+
+np.savez('mat.npz', sp=osp, ep=ep, grp=grp.map, grd=grd.map )
 
 
         
