@@ -11,7 +11,7 @@ es=rfe.features_to_tuples(list(etp.getFeatures()),blocke)
 gd=20 #design grade
 ad=10 #slope scaling in weightage
 
-#gr=Grid(mate);del(mate)
+# gr=Grid(mate);del(mate)
 gr = Grid(rfe.block2matrix(blocke)[0])
 srd=Grid(np.full([gr.h,gr.w],None)) #stores least distances
 srn=Grid(np.full([gr.h,gr.w],None)) #stores neighbouring points
