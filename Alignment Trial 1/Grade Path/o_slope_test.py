@@ -4,14 +4,15 @@ stp=QgsProject.instance().mapLayersByName('stp_tm')[0]
 etp=QgsProject.instance().mapLayersByName('etp_tm')[0]
 rfe=RasterF(ele)
 blocke=rfe.get_block(1)
-mate,oute=rfe.block2matrix(blocke)
+#mate,oute=rfe.block2matrix(blocke)
 ss=rfe.features_to_tuples(list(stp.getFeatures()),blocke)
 es=rfe.features_to_tuples(list(etp.getFeatures()),blocke)
 
 gd=20 #design grade
 ad=10 #slope scaling in weightage
 
-gr=Grid(mate);del(mate)
+#gr=Grid(mate);del(mate)
+gr = Grid(rfe.block2matrix(blocke)[0])
 srd=Grid(np.full([gr.h,gr.w],None)) #stores least distances
 srn=Grid(np.full([gr.h,gr.w],None)) #stores neighbouring points
 sru=Grid(np.full([gr.h,gr.w],None)) #stores legit nodes
