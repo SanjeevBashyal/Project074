@@ -79,8 +79,9 @@ class Grid:
                 return m.sqrt(2) * (currV + offsetV) / 2
 
 import pickle
-
-gr_map,sp,ep,srd_map,srn_map,sru_map=pickle.load(open(r'C:/Users/SANJEEV BASHYAL/Documents/QGIS/Grade Path/o_gr_sp_ep_srd_srn_sru_20_10.dat','rb'))
+from pathlib import Path
+path = str(Path.home()) + '\\Desktop\\Project074'
+gr_map,sp,ep,srd_map,srn_map,sru_map=pickle.load(open(path+'\\dump.dat','rb'))
 sp=np.array(sp)
 osp=sp.copy()
 ep=np.array(ep)
@@ -205,9 +206,9 @@ while (sp!=ep).any():
     if i>1000000:
         break
 
-pickle.dump([osp,ep,grp.map,grd.map],open(r'C:/Users/SANJEEV BASHYAL/Documents/QGIS/Grade Path/output_20_10.dat','wb'))
+pickle.dump([osp,ep,grp.map,grd.map],open(path+'\\output.dat','wb'))
 
-np.savez('mat.npz', sp=osp, ep=ep, grp=grp.map, grd=grd.map )
+#np.savez('mat.npz', sp=osp, ep=ep, grp=grp.map, grd=grd.map )
 
 
         
