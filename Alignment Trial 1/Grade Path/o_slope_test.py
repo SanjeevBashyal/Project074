@@ -13,8 +13,8 @@ ad=10 #slope scaling in weightage
 
 #gr=Grid(mate);del(mate)
 gr = Grid(rfe.block2matrix(blocke)[0])
-srd=Grid(np.full([gr.h,gr.w],None)) #stores least distances
 srn=Grid(np.full([gr.h,gr.w],None)) #stores neighbouring points
+srd=Grid(np.full([gr.h,gr.w],None)) #stores least distances
 sru=Grid(np.full([gr.h,gr.w],None)) #stores legit nodes
 for i in range(gr.h):
     for j in range(gr.w):
@@ -40,9 +40,9 @@ for i in range(gr.h):
         if xsl.size==0:
             continue
         ppd=mag[xsl]*(1+ad*np.abs(sl[xsl])/100)
-        oxsl=ppd.argsort()
-        srd.insert(ppd[oxsl],point)
+        oxsl=ppd.argsort()       
         srn.insert(nei[xsl][oxsl],point)
+        srd.insert(ppd[oxsl],point)
         sru.insert(True,point)
 
 pickle.dump([gr.map, ss[0][0], es[0][0], srd.map, srn.map, sru.map], open("C:\\Users\\SANJEEV BASHYAL\\Documents\\QGIS\\Grade Path\\o_gr_sp_ep_srd_srn_sru_20_10.dat", "wb"))
