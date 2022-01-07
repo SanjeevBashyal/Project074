@@ -6,12 +6,11 @@ class RasterF:
         self.ly = raster_layer
         self.xres = raster_layer.rasterUnitsPerPixelX()
         self.yres = raster_layer.rasterUnitsPerPixelY()
-        self.provider=raster_layer.dataProvider();
-        self.extent=self.provider.extent();
+        self.provider=raster_layer.dataProvider()
+        self.extent=self.provider.extent()
     
     def get_block(self,band):
-        block=self.provider.block(band,self.extent,self.ly.width(),self.ly.height())
-        return block
+        return self.provider.block(band,self.extent,self.ly.width(),self.ly.height())
     
     def block2matrix(self,block):
         contains_negative = False

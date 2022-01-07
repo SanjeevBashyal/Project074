@@ -80,7 +80,7 @@ class Grid:
 
 import pickle
 
-gr_map,sp,ep,srd_map,srn_map,sru_map=pickle.load(open(r'C:/Users/SANJEEV BASHYAL/Documents/QGIS/Grade Path/o_gr_sp_ep_srd_srn_sru_20.dat','rb'))
+gr_map,sp,ep,srd_map,srn_map,sru_map=pickle.load(open(r'C:/Users/SANJEEV BASHYAL/Documents/QGIS/Grade Path/o_gr_sp_ep_srd_srn_sru_20_10.dat','rb'))
 sp=np.array(sp)
 osp=sp.copy()
 ep=np.array(ep)
@@ -98,10 +98,10 @@ grp=Grid(np.full([gr.h,gr.w],None)) #save path in form of points list
 
 grd.insert(0,sp)
 grp.insert(sp,sp)
-get_nei=np.full([2000,2],-1)
+get_nei=np.full([3000,2],-1)
 get_nei[0]=sp
-c_pp=np.full([2000,2],-1)
-c_length=np.full([2000],np.inf)
+c_pp=np.full([3000,2],-1)
+c_length=np.full([3000],np.inf)
 locate=0
 locatelist=[]
 if csrn.value(sp).size!=0:
@@ -138,6 +138,7 @@ for point in snei:
 i=1
 psp=sp
 while (sp!=ep).any():
+    print(i)
     index=np.argmin(c_length[0:locate])
     pp=c_pp[index].copy()
     grd.insert(c_length[index],pp)
@@ -153,10 +154,6 @@ while (sp!=ep).any():
         get_nei[location]=pp
         c_pp[location]=csrn.value(pp)[0]
         c_length[location]=csrd.value(pp)[0]+grd.value(pp)
-
-
-    if (i % 1000)==0:
-        k=1
 
     while True:
         c_pp_array=csrn.value(get_nei[index])
@@ -199,16 +196,16 @@ while (sp!=ep).any():
         csrn.insert(nein,point)
 
 
-    print(i,pp)
+    # print(i,pp)
     psp=sp
     sp=pp
     # collect=np.insert(collect,len(collect),pp,axis=0)
     
     i=i+1
-    if i>1000:
+    if i>1000000:
         break
 
-pickle.dump([osp,ep,grp.map,grd.map],open(r'C:/Users/SANJEEV BASHYAL/Documents/QGIS/Grade Path/o_sp_ep_grp_grd_20_1000000.dat','wb'))
+pickle.dump([osp,ep,grp.map,grd.map],open(r'C:/Users/SANJEEV BASHYAL/Documents/QGIS/Grade Path/output_20_10.dat','wb'))
 
 np.savez('mat.npz', sp=osp, ep=ep, grp=grp.map, grd=grd.map )
 
