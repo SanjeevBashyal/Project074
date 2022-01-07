@@ -1,79 +1,75 @@
 import numpy as np
 import math as m
 
+
 class Grid:
-        def __init__(self, matrix):
-            self.map = np.array(matrix)
-            self.check=1
-            self.h = len(matrix)
-            self.w = len(matrix[0])
-            self.manhattan_boundry = None
-            self.curr_boundry = None
+    def __init__(self, matrix):
+        self.map = np.array(matrix)
+        self.check = 1
+        self.h = len(matrix)
+        self.w = len(matrix[0])
+        self.manhattan_boundry = None
+        self.curr_boundry = None
 
-        def _in_bounds(self, id):
-            x, y = id
-            return 0 <= x < self.h and 0 <= y < self.w
+    def _in_bounds(self, ij):
+        x, y = ij
+        return 0 <= x < self.h and 0 <= y < self.w
 
-        def _passable(self, id):
-            x, y = id
-            return self.map[x][y] is not None
+    def _passable(self, ij):
+        x, y = ij
+        return self.map[x][y] is not None
 
-        def is_valid(self, id):
-            return self._in_bounds(id) and self._passable(id)
+    def is_valid(self, ij):
+        return self._in_bounds(ij) and self._passable(ij)
 
-        def neighbors(self, id):
-            x, y = id
-            results = [(x + 1, y), (x, y - 1), (x - 1, y), (x, y + 1),
-                       (x + 1, y - 1), (x + 1, y + 1), (x - 1, y - 1), (x - 1, y + 1)]
-            results = list(filter(self.is_valid, results))
-            return np.array(results)
-            
-        def neighbors_ext(self, id):
-            x, y = id
-            results = [(x + 1, y), (x, y - 1), (x - 1, y), (x, y + 1),
-                       (x + 1, y - 1), (x + 1, y + 1), (x - 1, y - 1), (x - 1, y + 1),
-                       (x+2,y+1),(x+1,y+2),(x-1,y+2),(x-2,y+1),(x-2,y-1),(x-1,y-2),(x+1,y-2),(x+2,y-1)]
-            results = list(filter(self.is_valid, results))
-            return np.array(results)
-            
-        def values(self, id):
-            return self.map[id[:,0],id[:,1]]
-            
-        def value(self, id):
-            return self.map[id[0],id[1]]
-            
-        def insert(self,value,id):
-            self.map[id[0],id[1]]=value
-            
-        def update_less_than(self,values,ids):
-            vals=self.values(ids)
-            ids=ids[np.where(values<vals)]
-            list(map(lambda n,m:self.insert(m,n),values[ids],ids))
+    def neighbors(self, ij):
+        x, y = ij
+        results = [
+            (x + 1, y),
+            (x, y - 1),
+            (x - 1, y),
+            (x, y + 1),
+            (x + 1, y - 1),
+            (x + 1, y + 1),
+            (x - 1, y - 1),
+            (x - 1, y + 1),
+        ]
+        results = list(filter(self.is_valid, results))
+        return np.array(results)
 
-        @staticmethod
-        def manhattan_distance(id1, id2):
-            x1, y1 = id1
-            x2, y2 = id2
-            return abs(x1 - x2) + abs(y1 - y2)
+    def neighbors_ext(self, ij):
+        x, y = ij
+        results = [
+            (x + 1, y),
+            (x, y - 1),
+            (x - 1, y),
+            (x, y + 1),
+            (x + 1, y - 1),
+            (x + 1, y + 1),
+            (x - 1, y - 1),
+            (x - 1, y + 1),
+            (x + 2, y + 1),
+            (x + 1, y + 2),
+            (x - 1, y + 2),
+            (x - 2, y + 1),
+            (x - 2, y - 1),
+            (x - 1, y - 2),
+            (x + 1, y - 2),
+            (x + 2, y - 1),
+        ]
+        results = list(filter(self.is_valid, results))
+        return np.array(results)
 
-        @staticmethod
-        def min_manhattan(curr_node, end_nodes):
-            return min(map(lambda node: Grid.manhattan_distance(curr_node, node), end_nodes))
+    def values(self, ij):
+        return self.map[ij[:, 0], ij[:, 1]]
 
-        @staticmethod
-        def max_manhattan(curr_node, end_nodes):
-            return max(map(lambda node: Grid.manhattan_distance(curr_node, node), end_nodes))
+    def value(self, ij):
+        return self.map[ij[0], ij[1]]
 
-        @staticmethod
-        def all_manhattan(curr_node, end_nodes):
-            return {end_node: Grid.manhattan_distance(curr_node, end_node) for end_node in end_nodes}
+    def insert(self, value, ij):
+        self.map[ij[0], ij[1]] = value
 
-        def simple_cost(self, cur, nex):
-            cx, cy = cur
-            nx, ny = nex
-            currV = self.map[cx][cy]
-            offsetV = self.map[nx][ny]
-            if cx == nx or cy == ny:
-                return (currV + offsetV) / 2
-            else:
-                return m.sqrt(2) * (currV + offsetV) / 2
+    def update_less_than(self, values, ijs):
+        vals = self.values(ijs)
+        ijs = ijs[np.where(values < vals)]
+        list(map(lambda n, m: self.insert(m, n), values[ijs], ijs))
