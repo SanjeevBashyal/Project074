@@ -37,8 +37,9 @@ class RasterF:
         return QgsPoint(x, y)
 
     def ijs_to_points(self, ijs):
-        points = list(map(lambda ij: self.ij_to_point(ij), ijs))
-        return points
+        #points = list(map(lambda ij: self.ij_to_point(ij), ijs))
+        #return points
+        return [self.ij_to_point(ij) for ij in ijs]
 
     def ij_to_xy(self, ij):
         x = (ij[1] + 0.5) * self.xres + self.extent.xMinimum()
@@ -46,8 +47,7 @@ class RasterF:
         return [x, y]
 
     def ijs_to_xys(self, ijs):
-        xys = list(map(lambda ij: self.ij_to_xy(ij), ijs))
-        return xys
+        return [self.ij_to_xy(ij) for ij in ijs]
 
     def point_to_ij(self, point):
         j = floor((point.x() - self.extent.xMinimum()) / self.xres)
