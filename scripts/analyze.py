@@ -4,6 +4,7 @@ import csv, sys
 latLonAlt, output = sys.argv[1:]
 projectCoords = True if 'p' in sys.argv else False
 
+# ref: https://en.wikipedia.org/wiki/Geographic_coordinate_conversion#From_geodetic_to_ECEF_coordinates
 def getXYZ(lat, lon, alt):
 	a = 6378137 #semi-major axis
 	b = 6356752.314245 #semi-minor axis

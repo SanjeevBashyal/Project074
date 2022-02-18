@@ -3,6 +3,7 @@ from math import sqrt
 from rateSteps import rateStep
 
 def statAnal(data, cutHigh = False):
+	print(data)
 	if len(data)==0:
 		return {
 			'N': 0,
@@ -28,21 +29,26 @@ def statAnal(data, cutHigh = False):
 	data.sort()
 	dataLen = len(data)
 	
-	thirdQIndex = 3*(dataLen + 1)/4 - 1
-	thirdQuartile = data[int(thirdQIndex)]+(thirdQIndex - int(thirdQIndex))*(data[int(thirdQIndex)+1] - data[int(thirdQIndex)])
-	
-	if cutHigh:
-		data = list(filter(lambda x: x <= thirdQuartile, data))
-		dataLen = len(data)
+	if(dataLen>2):
 		thirdQIndex = 3*(dataLen + 1)/4 - 1
 		thirdQuartile = data[int(thirdQIndex)]+(thirdQIndex - int(thirdQIndex))*(data[int(thirdQIndex)+1] - data[int(thirdQIndex)])
 		
-	
-	firstQIndex = (dataLen + 1)/4 - 1
-	firstQuartile = data[int(firstQIndex)]+(firstQIndex - int(firstQIndex))*(data[int(firstQIndex)+1] - data[int(firstQIndex)])
-	
-	medQIndex = (dataLen + 1)/2 - 1
-	median = data[int(medQIndex)]+(medQIndex - int(medQIndex))*(data[int(medQIndex)+1] - data[int(medQIndex)])
+		if cutHigh:
+			data = list(filter(lambda x: x <= thirdQuartile, data))
+			dataLen = len(data)
+			thirdQIndex = 3*(dataLen + 1)/4 - 1
+			thirdQuartile = data[int(thirdQIndex)]+(thirdQIndex - int(thirdQIndex))*(data[int(thirdQIndex)+1] - data[int(thirdQIndex)])
+			
+		
+		firstQIndex = (dataLen + 1)/4 - 1
+		firstQuartile = data[int(firstQIndex)]+(firstQIndex - int(firstQIndex))*(data[int(firstQIndex)+1] - data[int(firstQIndex)])
+		
+		medQIndex = (dataLen + 1)/2 - 1
+		median = data[int(medQIndex)]+(medQIndex - int(medQIndex))*(data[int(medQIndex)+1] - data[int(medQIndex)])
+	else:
+		firstQuartile = data[0]
+		median = 0.5*(data[0]+data[-1])
+		thirdQuartile = data[-1]
 	
 	minimum = data[0]
 	maximum = data[-1]
