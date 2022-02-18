@@ -77,3 +77,30 @@ class Grid:
                 return (currV + offsetV) / 2
             else:
                 return m.sqrt(2) * (currV + offsetV) / 2
+
+
+import pickle
+from pathlib import Path
+path = str(Path.home()) + '\\Desktop\\Project074'
+sp=np.array(ss[0][0])
+ep=np.array(es[0][0])
+grp_map,grd_map=pickle.load(open(path+'\\output.dat','rb'))[2:]
+grp=Grid(grp_map)
+collect=np.array([ep])
+while (ep!=sp).any():
+    pp=grp.value(ep)
+    collect=np.insert(collect,len(collect),pp,axis=0)
+    ep=pp
+
+points=rfe.ijs_to_points(collect)
+geo=RasterF.create_path_feature_from_points(points,0)
+geo.setAttributes([1])
+loc=r'C:\Users\SANJEEV BASHYAL\Documents\QGIS\Test\aspect_path55.shp'
+fields=QgsFields()
+fields.append(QgsField('id',QVariant.Int))
+writer=QgsVectorFileWriter(loc,'UTF-8',fields,QgsWkbTypes.LineString,QgsCoordinateReferenceSystem('ESRI:102306'),'ESRI Shapefile')
+writer.addFeature(geo)
+del(writer)
+iface.addVectorLayer(loc,'','ogr')
+
+#pickle.dump(collect,open(r'C:/Users/SANJEEV BASHYAL/Documents/QGIS/Grade Path/least_grade_distance_path.dat','wb'))
