@@ -1,0 +1,30 @@
+{
+    "Length": "-12.2",
+    "Bridges": {
+        "sum": 4.9,
+        "N": 7.6,
+        "med": 1.5,
+        "thirdQ": 0.9,
+        "max": 3.6,
+        "avg": 2.2,
+        "freq": 2.5
+    },
+    "Grades": {
+        "sum": 0,
+        "N": 0,
+        "med": 3.9,
+        "thirdQ": 2.2,
+        "max": 2.2,
+        "avg": 4.4,
+        "freq": 3.5
+    },
+    "Hz Angles": {
+        "sum": 3.8,
+        "N": 0,
+        "med": 1.0,
+        "thirdQ": 0.9,
+        "max": 6.0,
+        "avg": 1.4,
+        "freq": 2.0
+    }
+}
