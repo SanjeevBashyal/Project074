@@ -3,7 +3,6 @@ from math import sqrt
 from rateSteps import rateStep
 
 def statAnal(data, cutHigh = False):
-	print(data)
 	if len(data)==0:
 		return {
 			'N': 0,
@@ -94,7 +93,10 @@ def statAnal(data, cutHigh = False):
 		'freq': frequency
 	}
 
-analysed, output = sys.argv[1:]
+directory = sys.argv[1]
+analysed = directory + '\\CSVs\\analysed.csv'
+output = directory + '\\Score\\score.json'
+
 
 totalLength = 0;
 bridges = [];
@@ -138,30 +140,30 @@ outputJSON = {
 	'Hz Angles': hzAnglesAnal
 }
 
-def rateAnal(stats, sum = 0, N = 0, med = 0, thirdQ = 0, max = 0, avg = 0, freq = 1):
-	rateDict = {'sum': sum, 'N': N, 'med': med, 'thirdQ': thirdQ, 'max': max, 'avg': avg, 'freq': freq}
-	for x in ['sum', 'N', 'med', 'thirdQ', 'max', 'avg']:
-		if rateDict[x]!=0:
-			rateDict[x] = min([round(stats[x]/rateDict[x],1),10])
-	if rateDict['freq']!=0:
-		rateDict['freq'] = 0
-		statsFreq = list(stats['freq'].values())
-		for x in range(0,4):
-			rateDict['freq'] += round((x+1)*statsFreq[x]/400,1)*5
-	return rateDict
+# def rateAnal(stats, sum = 0, N = 0, med = 0, thirdQ = 0, max = 0, avg = 0, freq = 1):
+	# rateDict = {'sum': sum, 'N': N, 'med': med, 'thirdQ': thirdQ, 'max': max, 'avg': avg, 'freq': freq}
+	# for x in ['sum', 'N', 'med', 'thirdQ', 'max', 'avg']:
+		# if rateDict[x]!=0:
+			# rateDict[x] = min([round(stats[x]/rateDict[x],1),10])
+	# if rateDict['freq']!=0:
+		# rateDict['freq'] = 0
+		# statsFreq = list(stats['freq'].values())
+		# for x in range(0,4):
+			# rateDict['freq'] += round((x+1)*statsFreq[x]/400,1)*5
+	# return rateDict
 	
-ratingJSON = {
-	'Length': f"{round((totalLength - 140000)/rateStep['length'], 1)}",
-	'Bridges': rateAnal(bridgeAnal, **rateStep['bridge']),
-	'Tunnels': rateAnal(tunnelAnal, **rateStep['tunnel']),
-	'Grades': rateAnal(gradeAnal, **rateStep['grade']),
-	'Hz Angles': rateAnal(hzAnglesAnal, **rateStep['hzAngle'])
-}
+# ratingJSON = {
+	# 'Length': f"{round((totalLength - 140000)/rateStep['length'], 1)}",
+	# 'Bridges': rateAnal(bridgeAnal, **rateStep['bridge']),
+	# 'Tunnels': rateAnal(tunnelAnal, **rateStep['tunnel']),
+	# 'Grades': rateAnal(gradeAnal, **rateStep['grade']),
+	# 'Hz Angles': rateAnal(hzAnglesAnal, **rateStep['hzAngle'])
+# }
 
-with open(output+'.json', 'w') as outFile:
+with open(output, 'w') as outFile:
 	outFile.write(json.dumps(outputJSON, indent=4))
 	outFile.close()	
 	
-with open(output+'Score.json', 'w') as outFile:
-	outFile.write(json.dumps(ratingJSON, indent=4))
-	outFile.close()	
+# with open(output+'Score.json', 'w') as outFile:
+	# outFile.write(json.dumps(ratingJSON, indent=4))
+	# outFile.close()	
