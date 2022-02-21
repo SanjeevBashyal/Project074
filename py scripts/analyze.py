@@ -1,7 +1,9 @@
 from math import sqrt, pi, sin, cos, acos
 import csv, sys
 
-latLonAlt, output = sys.argv[1:3]
+directory = sys.argv[1]
+latLonAlt = directory + '\\CSVs\\data.csv'
+output = directory + "\\CSVs\\analysed.csv"
 projectCoords = True if 'p' in sys.argv else False
 
 # ref: https://en.wikipedia.org/wiki/Geographic_coordinate_conversion#From_geodetic_to_ECEF_coordinates
