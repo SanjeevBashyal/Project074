@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-fid,X,Y,Z,bridge,osm_id,code,fclass,name,ref,oneway,maxspeed,tunnel,len,Length,vertex_index,vertex_part,vertex_part_index,distance,angle
-=======
 fid,X,Y,Z,Bridge,osm_id,code,fclass,name,ref,oneway,maxspeed,tunnel,len,Length,vertex_index,vertex_part,vertex_part_index,distance,angle
->>>>>>> 7a1fb231ea7de4b7cc5adc99e7951b3053d3db11
 1000,626743.8428,3066130.88,1308.9,F,,,,last sec,,,,,,6509.113253,0,0,0,0,295.304705
 1000,625732.6091,3066608.99,1377.7,F,,,,last sec,,,,,,6509.113253,1,0,1,1118.562616,297.0736825
 1000,624982.6199,3067022.027,1350.4,F,,,,last sec,,,,,,6509.113253,2,0,2,1974.76577,303.7895848
