@@ -47,7 +47,10 @@ with open(latLonAlt) as csvFile:
 			l2 = sqrt((x0-x_1)**2+(y0-y_1)**2)
 			gr = 0.005*(grade + data[-1][7])
 			hz = acos(min(1,((x-x0)*(x0-x_1)+(y-y0)*(y0-y_1))/(l1*l2)))
-			speed = max(float(row['maxspeed']), min(STRT_SPEED,5.292*sqrt((1-gr)*min(l1,l2)/tan(hz/2))))
+			min_speed=STRT_SPEED
+			if not hz==0:
+				min_speed=min(STRT_SPEED,5.292*sqrt((1-gr)*min(l1,l2)/tan(hz/2)))
+			speed = max(float(row['maxspeed']), min_speed)
 		data.append([rowIndex+1, x, y, z, len, bridge, tunnel, grade, hz*180/pi, speed, 3.6*len/speed])
 		rowIndex += 1
 		alt0 = alt
