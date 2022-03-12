@@ -103,6 +103,8 @@ bridges = [];
 tunnels = [];
 grades = [];
 hzAngles = [];
+speeds = [];
+travelTime = 0;
 
 with open(analysed) as pointFile:
 	cr = csv.DictReader(pointFile)
@@ -111,6 +113,7 @@ with open(analysed) as pointFile:
 	for row in cr:
 		grades.append(round(abs(float(row['grade'])),3))
 		hzAngles.append(round(float(row['hz. angle']),3))
+		speeds.append(round(float(row['speed']),3))
 		isBridgeTemp = int(row['bridge'])
 		if isBridgeTemp == 1:
 			if isBridge == 0:
@@ -126,18 +129,22 @@ with open(analysed) as pointFile:
 				tunnels[-1] += float(row['length'])
 		isTunnel = isTunnelTemp
 		totalLength += float(row['length'])
+		travelTime += float(row['time'])
 
 bridgeAnal = statAnal(bridges)
 tunnelAnal = statAnal(tunnels)
 gradeAnal = statAnal(grades, True)
 hzAnglesAnal = statAnal(hzAngles)
+speedsAnal = statAnal(speeds)
 
 outputJSON = {
 	'Length': round(totalLength,3),
 	'Bridges': bridgeAnal,
 	'Tunnels': tunnelAnal,
 	'Grades': gradeAnal,
-	'Hz Angles': hzAnglesAnal
+	'Hz Angles': hzAnglesAnal,
+	'Speeds': speedsAnal,
+	'Travel Time': round(travelTime/3600,3)
 }
 
 # def rateAnal(stats, sum = 0, N = 0, med = 0, thirdQ = 0, max = 0, avg = 0, freq = 1):

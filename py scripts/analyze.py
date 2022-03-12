@@ -1,10 +1,12 @@
-from math import sqrt, pi, sin, cos, acos
+from math import sqrt, pi, sin, cos, tan, acos
 import csv, sys
 
 directory = sys.argv[1]
 latLonAlt = directory + '\\CSVs\\data.csv'
 output = directory + "\\CSVs\\analysed.csv"
 projectCoords = True if 'p' in sys.argv else False
+STRT_SPEED = float(input('Enter straight reach speed [default = 30kmph]'))
+STRT_SPEED = STRT_SPEED if STRT_SPEED > 0 else 30
 
 # ref: https://en.wikipedia.org/wiki/Geographic_coordinate_conversion#From_geodetic_to_ECEF_coordinates
 def getXYZ(lat, lon, alt):
@@ -19,7 +21,7 @@ def getXYZ(lat, lon, alt):
 	Z = ((1-e)*N(lat) + alt)*sin(lat)
 	return [X,Y,Z]
 
-data = [['id', 'X','Y','Z', 'length','bridge','tunnel','grade','hz. angle']]
+data = [['id', 'X','Y','Z', 'length','bridge','tunnel','grade','hz. angle','speed','time']]
 with open(latLonAlt) as csvFile:
 	cr = csv.DictReader(csvFile)
 	rowIndex = 0
@@ -38,10 +40,15 @@ with open(latLonAlt) as csvFile:
 			grade = 100*(alt - alt0)/len
 		if rowIndex < 2:
 			hz = 0
+			speed = STRT_SPEED
 		else:
 			x_1,y_1 = data[-2][1:3]
-			hz = acos(min(1,((x-x0)*(x0-x_1)+(y-y0)*(y0-y_1))/sqrt(((x-x0)**2+(y-y0)**2)*((x0-x_1)**2+(y0-y_1)**2))))*180/pi
-		data.append([rowIndex+1, x, y, z, len, bridge, tunnel, grade, hz])
+			l1 = sqrt((x-x0)**2+(y-y0)**2)
+			l2 = sqrt((x0-x_1)**2+(y0-y_1)**2)
+			gr = 0.005*(grade + data[-1][7])
+			hz = acos(min(1,((x-x0)*(x0-x_1)+(y-y0)*(y0-y_1))/(l1*l2)))
+			speed = max(float(row['maxspeed']), min(STRT_SPEED,5.292*sqrt((1-gr)*min(l1,l2)/tan(hz/2))))
+		data.append([rowIndex+1, x, y, z, len, bridge, tunnel, grade, hz*180/pi, speed, 3.6*len/speed])
 		rowIndex += 1
 		alt0 = alt
 
