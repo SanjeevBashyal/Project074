@@ -55,7 +55,10 @@ def statAnal(data, cutHigh = False):
 	frequency = [0,0,0,0]
 	sumData = 0
 	sumData2 = 0
-	
+
+	if dataLen==1:
+		quartile=1
+
 	for x in data:
 		qIndex = int((x - minimum)/quartile)
 		frequency[min([qIndex,3])] += 100/dataLen
@@ -66,7 +69,10 @@ def statAnal(data, cutHigh = False):
 	sumData2 = sumData2 - dataLen*average**2
 	sigma2 = sumData2/dataLen
 	sigma = sqrt(sigma2)
-	sd2 = sumData2/(dataLen-1)
+	if dataLen>1:
+		sd2 = sumData2/(dataLen-1)
+	else:
+		sd2 = sumData2/dataLen
 	sd = sqrt(sd2)
 	
 	frequency = {
@@ -94,6 +100,7 @@ def statAnal(data, cutHigh = False):
 	}
 
 directory = sys.argv[1]
+# directory='C:\\Users\\SANJEEV BASHYAL\\Desktop\\Project074\\Alignment2'
 analysed = directory + '\\CSVs\\analysed.csv'
 output = directory + '\\Score\\score.json'
 
