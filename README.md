@@ -7,13 +7,10 @@ Kathmandu Pokhara existing highway route is one of the busiest highway route of 
 ### Completed
 
 - Current Alignment Features Extraction and Rating
-- Selection of Alternative Alignment Trial 1
-- Selection of Alternative Alignment Trial 2
+- Selection of all 5 Alternative Alignments
+- Technical and Economical Evaluation of all Alternatives
+- The report is completed.
 
-### To Do
-
-- Finalize Shortest Path Dijkstra
-- Write reports on Selection of Alternative Alignment Trials
 
 ## Languages and Tools
 <img align="left" alt="QGIS" width="26px" src="https://www.qgis.org/en/_static/logo.png" />
